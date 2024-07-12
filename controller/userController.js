@@ -55,26 +55,21 @@ export const login = async (req, res) => {
         expiresIn: '1d',
       });
 
-        // Generate refresh token
-      const refreshToken = jwt.sign({ email: User.email, name: User.name }, process.env.REFRESH_TOKEN_SECRET, {
-        expiresIn: '3h',
-      });
-
+      
         // Simpan refresh token ke database
-        await user.update({ refreshToken }, { where: { email } });
+        await user.update({ accessToken }, { where: { email } });
   
       const detailData = {
-        user_id: User.id,
         name: User.name,
       };
   
       // Kirim response dengan accessToken
-      res.cookie('refreshToken', refreshToken, {
+      res.cookie('accessToken', accessToken, {
         httpOnly: true,
         maxAge: 3 * 60 * 60 * 1000, // 3 jam
       });
   
-      res.status(200).json({ message: 'Login successfully', refreshToken, detailData });
+      res.status(200).json({ message: 'Login successfully', accessToken, detailData });
     } catch (error) {
       console.error('Error during login:', error);
       res.status(500).json({ message: 'Internal server error' });

@@ -24,7 +24,7 @@ const user = db.define('user', {
         type: DataTypes.STRING,
         allowNull: false
     },
-    refreshToken: {
+    accessToken: {
         type: DataTypes.STRING,
         allowNull: true
     },
