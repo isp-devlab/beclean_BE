@@ -17,3 +17,23 @@ Content-Type: application/json
     "email": "kkiki6001@gmail.com",
     "password": "123456"
 }
+
+###logout
+DELETE http://localhost:3000/logout
+Authorization: Bearear eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImtraWtpNjAwMUBnbWFpbC5jb20iLCJuYW1lIjoia2lraSIsImlhdCI6MTcyMDgwNDI4NiwiZXhwIjoxNzIwODkwNjg2fQ.xHe7gw1z48SHu4dVa_aBGvB0Z2iBVCg3oyyetg-0nog
+
+### forgot password
+POST http://localhost:3000/forgotpassword
+Content-Type: application/json
+
+{
+    "email": "kkiki6001@gmail.com"
+}
+
+### reset password
+POST http://localhost:3000/resetpassword?token=f3yDXEtrRioHNBxxcSWe3TvVowX6UN4Y
+Content-Type: application/json
+
+{
+    "password": "123456"
+}
