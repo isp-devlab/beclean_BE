@@ -1,34 +1,46 @@
-import {Sequelize} from 'sequelize';
+import { Sequelize, Model } from 'sequelize';
 import db from '../config/database.js';
 
-const {DataTypes} = Sequelize;
+const { DataTypes } = Sequelize;
 
-const user = db.define('user', {
+class User extends Model {}
+
+User.init({
+    id: {
+        type: DataTypes.INTEGER,
+        autoIncrement: true,
+        primaryKey: true,
+    },
     name: {
         type: DataTypes.STRING,
-        allowNull: false
+        allowNull: false,
     },
     phone: {
         type: DataTypes.STRING,
-        allowNull: false
+        allowNull: false,
     },
     email: {
         type: DataTypes.STRING,
-        allowNull: false
+        allowNull: false,
     },
     password: {
         type: DataTypes.STRING,
-        allowNull: false
+        allowNull: false,
     },
     role: {
         type: DataTypes.STRING,
-        allowNull: false
+        allowNull: false,
     },
-    accessToken: {
+    access_token: {
         type: DataTypes.STRING,
-        allowNull: true
+        allowNull: true,
     },
+}, {
+    sequelize: db,
+    modelName: 'user',
+    tableName: 'users',
+    timestamps: true, // $timestamps = true in Laravel
+    freezeTableName: true,
+});
 
-}, { freezeTableName: true });
-
-export default user;
+export default User;

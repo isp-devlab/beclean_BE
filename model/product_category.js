@@ -1,13 +1,26 @@
-import {Sequelize} from 'sequelize';
+import { Sequelize, Model } from 'sequelize';
 import db from '../config/database.js';
 
-const {DataTypes} = Sequelize;
+const { DataTypes } = Sequelize;
 
-const product_category = db.define('product_category', {
-    name:{
-        type: DataTypes.STRING,
-        allowNull: false
+class ProductCategory extends Model {}
+
+ProductCategory.init({
+    id: {
+        type: DataTypes.INTEGER,
+        autoIncrement: true,
+        primaryKey: true,
     },
-}, { freezeTableName: true });
+    name: {
+        type: DataTypes.STRING,
+        allowNull: false,
+    },
+}, {
+    sequelize: db,
+    modelName: 'product_category',
+    tableName: 'product_categories',
+    timestamps: true, // $timestamps = true in Laravel
+    freezeTableName: true,
+});
 
-export default product_category;
+export default ProductCategory;

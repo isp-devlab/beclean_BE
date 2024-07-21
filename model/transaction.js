@@ -1,46 +1,59 @@
-import {Sequelize} from 'sequelize';
+import { Sequelize, Model } from 'sequelize';
 import db from '../config/database.js';
-import user from './userModel.js';
-import product_category from './product_category.js';
+import User from './userModel.js';
+import ProductCategory from './product_category.js';
 
-const {DataTypes} = Sequelize;
+const { DataTypes } = Sequelize;
 
-const transaction = db.define('transaction', {
-    user_Id: {type: DataTypes.INTEGER,
+class Transaction extends Model {}
+
+Transaction.init({
+    id: {
+        type: DataTypes.INTEGER,
+        autoIncrement: true,
+        primaryKey: true,
+    },
+    user_id: {
+        type: DataTypes.INTEGER,
         references: {
-            model: user, // 'Users' would also work
+            model: User,
             key: 'id',
         },
     },
-    product_category_Id: {
+    product_category_id: {
         type: DataTypes.INTEGER,
         references: {
-            model: product_category,
+            model: ProductCategory,
             key: 'id',
         },
     },
     longitude: {
         type: DataTypes.STRING,
-        allowNull: false
+        allowNull: false,
     },
     latitude: {
         type: DataTypes.STRING,
-        allowNull: false
+        allowNull: false,
     },
-    status_product: {
+    product_status: {
         type: DataTypes.STRING,
-        allowNull: false
+        allowNull: false,
     },
-    status_transaction: {
+    transaction_status: {
         type: DataTypes.STRING,
-        allowNull: false
+        allowNull: false,
     },
+}, {
+    sequelize: db,
+    modelName: 'transaction',
+    tableName: 'transactions',
+    timestamps: true, // $timestamps = true in Laravel
+    freezeTableName: true,
+});
 
-}, { freezeTableName: true });
+User.hasMany(Transaction, { foreignKey: 'user_id' });
+Transaction.belongsTo(User, { foreignKey: 'user_id' });
+ProductCategory.hasMany(Transaction, { foreignKey: 'product_category_id' });
+Transaction.belongsTo(ProductCategory, { foreignKey: 'product_category_id' });
 
-user.hasMany(transaction, { foreignKey: 'user_Id' });
-transaction.belongsTo(user, { foreignKey: 'user_Id' });
-product_category.hasMany(transaction, { foreignKey: 'product_category_Id' });
-transaction.belongsTo(product_category, { foreignKey: 'product_category_Id' });
-
-export default transaction;
+export default Transaction;

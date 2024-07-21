@@ -1,28 +1,41 @@
-import {Sequelize} from 'sequelize';
+import { Sequelize, Model } from 'sequelize';
 import db from '../config/database.js';
-import product_category from './product_category.js';
+import ProductCategory from './product_category.js';
 
-const {DataTypes} = Sequelize;
+const { DataTypes } = Sequelize;
 
-const product = db.define('product', {
-    product_Id:{type:DataTypes.INTEGER,
-        references:{
-            model:product_category,
-            key:'id',
+class Product extends Model {}
+
+Product.init({
+    id: {
+        type: DataTypes.INTEGER,
+        autoIncrement: true,
+        primaryKey: true,
+    },
+    product_category_id: {
+        type: DataTypes.INTEGER,
+        references: {
+            model: ProductCategory,
+            key: 'id',
         },
     },
-    name:{
+    name: {
         type: DataTypes.STRING,
-        allowNull: false
+        allowNull: false,
     },
-    price:{
+    price: {
         type: DataTypes.INTEGER,
-        allowNull: false
+        allowNull: false,
     },
+}, {
+    sequelize: db,
+    modelName: 'product',
+    tableName: 'products',
+    timestamps: true, // $timestamps = true in Laravel
+    freezeTableName: true,
+});
 
-}, { freezeTableName: true });
+Product.belongsTo(ProductCategory, { foreignKey: 'product_category_id' });
+ProductCategory.hasMany(Product, { foreignKey: 'product_category_id' });
 
-product.belongsTo(product_category, { foreignKey: 'product_Id' });
-product_category.hasMany(product, { foreignKey: 'product_Id' });
-
-export default product;
+export default Product;

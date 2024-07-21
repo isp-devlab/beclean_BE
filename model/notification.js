@@ -1,27 +1,37 @@
-import {Sequelize} from 'sequelize';
+import { Sequelize, Model } from 'sequelize';
 import db from '../config/database.js';
 import user from './userModel.js';
 
-const {DataTypes} = Sequelize;
+const { DataTypes } = Sequelize;
 
-const notification = db.define('notification', {
-    userId: {type: DataTypes.INTEGER,
+class Notification extends Model {}
+
+Notification.init({
+    id: {
+        type: DataTypes.INTEGER,
+        autoIncrement: true,
+        primaryKey: true,
+    },
+    user_id: {
+        type: DataTypes.INTEGER,
         references: {
-            model: user, // 'Users' would also work
+            model: user, // 'user' is the model name
             key: 'id',
         },
     },
     content: {
         type: DataTypes.STRING,
-        allowNull: false
+        allowNull: false,
     },
-    date: {
-        type: DataTypes.DATE,
-        allowNull: false
-    },
-}, { freezeTableName: true });
+}, {
+    sequelize: db,
+    modelName: 'notification',
+    tableName: 'notifications',
+    timestamps: true, // $timestamps = true in Laravel
+    freezeTableName: true,
+});
 
-user.hasMany(notification, { foreignKey: 'userId' });
-notification.belongsTo(user, { foreignKey: 'userId' });
+user.hasMany(Notification, { foreignKey: 'user_id' });
+Notification.belongsTo(user, { foreignKey: 'user_id' });
 
-export default notification;
+export default Notification;

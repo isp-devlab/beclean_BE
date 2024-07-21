@@ -1,35 +1,45 @@
-import {Sequelize} from 'sequelize';
+import { Sequelize, Model } from 'sequelize';
 import db from '../config/database.js';
 import transaction from './transaction.js';
 
-const {DataTypes} = Sequelize;
+const { DataTypes } = Sequelize;
 
-const item = db.define('item', {
-    transaction_Id: {type: DataTypes.INTEGER,
+class Item extends Model {}
+
+Item.init({
+    id: {
+        type: DataTypes.INTEGER,
+        autoIncrement: true,
+        primaryKey: true,
+    },
+    transaction_id: {
+        type: DataTypes.INTEGER,
         references: {
-            model: transaction, // 'Users' would also work
+            model: transaction, // 'transaction' is the model name
             key: 'id',
         },
     },
-    product: {
+    product_name: {
         type: DataTypes.STRING,
-        allowNull: false
+        allowNull: false,
     },
     price: {
         type: DataTypes.INTEGER,
-        allowNull: false
+        allowNull: false,
     },
     weight: {
         type: DataTypes.INTEGER,
-        allowNull: false
+        allowNull: false,
     },
-    ammount: {
-        type: DataTypes.INTEGER,
-        allowNull: false
-    },
-}, { freezeTableName: true });
+}, {
+    sequelize: db,
+    modelName: 'item',
+    tableName: 'items',
+    timestamps: true, // $timestamps = true in Laravel
+    freezeTableName: true,
+});
 
-item.belongsTo(transaction, { foreignKey: 'transaction_Id' });
-transaction.hasMany(item, { foreignKey: 'transaction_Id' });
+Item.belongsTo(transaction, { foreignKey: 'transaction_id' });
+transaction.hasMany(Item, { foreignKey: 'transaction_id' });
 
-export default item;
+export default Item;
